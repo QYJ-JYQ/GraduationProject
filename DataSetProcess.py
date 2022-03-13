@@ -8,28 +8,28 @@ from skimage import io, transform, color
 import time
 import cv2
 
-raw_path='D:/Microelectronics/GraduationProject/MainProject/cnn/DataSet/'
-pro_path='D:/Microelectronics/GraduationProject/MainProject/cnn/DataSetProcessed_3/'
+raw_path='C:/Users/28155/Desktop/github/02/'
+pro_path='C:/Users/28155/Desktop/github/new_dataset_pro/1/'
 width=32
 hight=32
 
 
 
 cate=[raw_path+x for x in os.listdir(raw_path) if os.path.isdir(raw_path + x) ]
-imgs=[]
-labels=[]
+
 for index, folder in enumerate(cate):
     i=0
     for img_addr in glob.glob(folder + '\*.jpg'):
         i+=1
         print('reading the images:%s' %(img_addr))
         img=cv2.imread(img_addr, 0)
-        ret, thresh = cv2.threshold(img, 180, 255, cv2.THRESH_BINARY_INV)
-        thresh=cv2.resize(thresh,(hight,width))
-        save_path=pro_path + '%s'%(str(index))
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        cv2.imwrite(save_path+'/%s.jpg'%(str(i)), thresh)
+        # ret, thresh = cv2.threshold(img, 180, 255, cv2.THRESH_BINARY_INV)
+        # thresh=cv2.resize(thresh,(hight,width))
+        img = cv2.resize(img,(32,32)) 
+        # save_path=pro_path + '%s'%(str(index))
+        # if not os.path.exists(save_path):
+        #     os.makedirs(save_path)
+        cv2.imwrite(pro_path+'/%s.jpg'%(str(i+20000)), img)
         print(i)
 
 

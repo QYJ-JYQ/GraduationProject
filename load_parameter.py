@@ -3,7 +3,7 @@ import numpy as np
 from tensorflow.keras.layers import Conv2D, BatchNormalization, Activation, MaxPool2D, Dropout, Flatten, Dense
 from tensorflow.keras import Model
 
-save_path='D:/Microelectronics/GraduationProject/MainProject/cnn/data_v2/'
+save_path='C:/Users/28155/Desktop/github/data/'
 
 
 def Record_Tensor(array, name):
@@ -50,7 +50,7 @@ def Record_Array4D(array, name, f):
 
 np.set_printoptions(threshold=np.inf)
 
-model=tf.keras.models.load_model('saved_model_v2')
+model=tf.keras.models.load_model('saved_model')
 model.summary()
 layers=model.layers
 

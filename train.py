@@ -12,8 +12,7 @@ from tensorflow.keras import Model
 
 np.set_printoptions(threshold=np.inf)
 
-data_set_path='D:/Microelectronics/GraduationProject/MainProject/cnn/DataSetProcessed_final/'
-save_path='D:/Microelectronics/GraduationProject/MainProject/cnn/data/'
+train_dataset_path='C:/Users/28155/Desktop/github/new_dataset_pro/'
 width=32
 hight=32
 
@@ -42,7 +41,7 @@ def read_img(path):
             imgs.append(img)
             labels.append(folder_name[index])
             cnt+=1
-            if(cnt==750):
+            if(cnt==950):
                 break
     imgs=np.array(imgs)
     labels=np.array(labels)
@@ -50,59 +49,17 @@ def read_img(path):
     return imgs, labels
 
 
-def Record_Tensor(tensor, name):
-    print("Recording tensor " + name + " ...")
-    f = open(save_path + name + '.dat', 'w+')
-    array = tensor.eval();
-    # print ("The range: ["+str(np.min(array))+":"+str(np.max(array))+"]")
-    if (np.size(np.shape(array)) == 1):
-        Record_Array1D(array, name, f)
-    else:
-        if (np.size(np.shape(array)) == 2):
-            Record_Array2D(array, name, f)
-        else:
-            if (np.size(np.shape(array)) == 3):
-                Record_Array3D(array, name, f)
-            else:
-                Record_Array4D(array, name, f)
-    f.close();
-
-
-def Record_Array1D(array, name, f):
-    for i in range(np.shape(array)[0]):
-        f.write(str(array[i]) + "\n");
-
-
-def Record_Array2D(array, name, f):
-    for i in range(np.shape(array)[0]):
-        for j in range(np.shape(array)[1]):
-            f.write(str(array[i][j]) + "\n");
-
-
-def Record_Array3D(array, name, f):
-    for i in range(np.shape(array)[0]):
-        for j in range(np.shape(array)[1]):
-            for k in range(np.shape(array)[2]):
-                f.write(str(array[i][j][k]) + "\n");
-
-
-def Record_Array4D(array, name, f):
-    for i in range(np.shape(array)[0]):
-        for j in range(np.shape(array)[1]):
-            for k in range(np.shape(array)[2]):
-                for l in range(np.shape(array)[3]):
-                    f.write(str(array[i][j][k][l]) + "\n");
-
 #打乱顺序
-x,y_=read_img(data_set_path)
+x,y_=read_img(train_dataset_path)
+
+
 np.random.seed(116)  # 使用相同的seed，保证输入特征和标签一一对应
 np.random.shuffle(x)
 np.random.seed(116)
 np.random.shuffle(y_)
 
-x=np.reshape(x,(cnt*10,32,32,1))
-
-#分为训练集和测试集
+x=np.reshape(x,(950*10,32,32,1))
+# 分为训练集和测试集
 ratio=0.8
 num_flag=int(ratio*cnt*10)
 x_train=x[:num_flag]
@@ -123,11 +80,11 @@ class LeNet5(Model):
                          activation='relu')
         self.p1 = MaxPool2D(pool_size=(2, 2), strides=2)
 
-        self.c2 = Conv2D(filters=3, kernel_size=(5, 5),
+        self.c2 = Conv2D(filters=2, kernel_size=(5, 5),
                          activation='relu')
         self.p2 = MaxPool2D(pool_size=(2, 2), strides=2)
 
-        self.c3 = Conv2D(filters=15, kernel_size=(5, 5),
+        self.c3 = Conv2D(filters=60, kernel_size=(5, 5),
                          activation='relu')
 
         self.flat = Flatten()
@@ -166,11 +123,11 @@ cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_save_path,
                                                  save_weights_only=True,
                                                  save_best_only=True)
 
-history = model.fit(x_train, y_train, batch_size=32, epochs=500, validation_data=(x_test, y_test), validation_freq=1
+history = model.fit(x_train, y_train, batch_size=32, epochs=100, validation_data=(x_test, y_test), validation_freq=1
                     ,callbacks=[cp_callback])
 model.summary()
 
-model.save('saved_model_v2')
+model.save('saved_model')
 
 # print(model.trainable_variables)
 file = open('./weights.txt', 'w')

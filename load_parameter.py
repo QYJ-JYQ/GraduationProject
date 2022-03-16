@@ -3,7 +3,7 @@ import numpy as np
 from tensorflow.keras.layers import Conv2D, BatchNormalization, Activation, MaxPool2D, Dropout, Flatten, Dense
 from tensorflow.keras import Model
 
-save_path='C:/Users/28155/Desktop/github/data_32_32_1100_adjcam/'
+save_path='C:/Users/28155/Desktop/github/data_68_68_1100_adjcam/'
 
 
 def Record_Tensor(array, name):

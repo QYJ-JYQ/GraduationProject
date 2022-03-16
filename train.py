@@ -13,8 +13,8 @@ from tensorflow.keras import Model
 np.set_printoptions(threshold=np.inf)
 
 train_dataset_path='C:/Users/28155/Desktop/github/capture_photo_all/'
-width=32
-hight=32
+width=68
+hight=68
 
 def read_img(path):
     '''
@@ -32,7 +32,7 @@ def read_img(path):
         for img_addr in glob.glob(folder+'/*.jpg'):
             print('reading the images:%s' %img_addr)
             img=cv.imread(img_addr,0)
-            img = cv.resize(img,(32,32))
+            img = cv.resize(img,(width,hight))
             img = np.array(img) 
             bool_30=img>=127
             img[bool_30]=255
@@ -59,7 +59,7 @@ np.random.shuffle(x)
 np.random.seed(116)
 np.random.shuffle(y_)
 
-x=np.reshape(x,(1100*10,32,32,1))
+x=np.reshape(x,(1100*10,width,hight,1))
 # 分为训练集和测试集
 ratio=0.8
 num_flag=int(ratio*cnt*10)
@@ -77,6 +77,11 @@ x_test = tf.cast(x_test, tf.float32)
 class LeNet5(Model):
     def __init__(self):
         super(LeNet5, self).__init__()
+
+        self.c0 = Conv2D(filters=1, kernel_size=(5, 5),
+                        activation='relu')
+        self.p0 = MaxPool2D(pool_size=(2, 2), strides=2)
+        
         self.c1 = Conv2D(filters=1, kernel_size=(5, 5),
                          activation='relu')
         self.p1 = MaxPool2D(pool_size=(2, 2), strides=2)
@@ -93,6 +98,9 @@ class LeNet5(Model):
         self.f3 = Dense(10, activation='softmax')
 
     def call(self, x):
+        x = self.c0(x)
+        x = self.p0(x)
+
         x = self.c1(x)
         x = self.p1(x)
 
@@ -131,12 +139,12 @@ model.summary()
 model.save('saved_model')
 
 # print(model.trainable_variables)
-file = open('./weights.txt', 'w')
-for v in model.trainable_variables:
-    file.write(str(v.name) + '\n')
-    file.write(str(v.shape) + '\n')
-    file.write(str(v.numpy()) + '\n')
-file.close()
+# file = open('./weights.txt', 'w')
+# for v in model.trainable_variables:
+#     file.write(str(v.name) + '\n')
+#     file.write(str(v.shape) + '\n')
+#     file.write(str(v.numpy()) + '\n')
+# file.close()
 
 # 显示训练集和验证集的acc和loss曲线
 acc = history.history['sparse_categorical_accuracy']
